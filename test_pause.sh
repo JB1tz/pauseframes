@@ -45,17 +45,23 @@ $N2 -t "$TESTNAME-${SPEED}Mbit-defaults" -p totals -o "tcp_bidir-$TESTNAME-${SPE
 killall tcpdump
 }
 
+pause() {
+ethtool --pause $IFACE $*
+}
+ 
 # Setup
 eth_setup
-run_tests
+run_tests "default"
 
 eth_change -s advertise 0x020 # gigE
-run_tests
+run_tests "default Gbit"
 
 # turn off pause frames
+pause tx off rx off
+eth_change 
+run_tests "pause tx on rx on"
 
-eth_change # fixme turn on pause frames
-run_tests
+pause tx on rx on
+eth_change 
+run_tests "pause tx on rx on"
 
-
-# turn 
